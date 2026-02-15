@@ -1,0 +1,41 @@
+# .greptile.yml - Clawd (Telegram AI Bot)
+# Automated PR review configuration for Greptile
+
+# Review focus areas
+focus:
+  - security
+  - correctness
+  - performance
+
+# Files to always review carefully
+critical_paths:
+  - "src/**"
+  - "lib/**"
+  - "config/**"
+  - "*.config.*"
+
+# Files to skip in review
+ignore:
+  - "*.test.ts"
+  - "*.spec.ts"
+  - "__fixtures__/**"
+  - "node_modules/**"
+  - "dist/**"
+
+# Custom rules
+rules:
+  - name: "No exposed secrets"
+    pattern: "(sk-|ghp_|Bearer |AKIA|password\\s*=|BOT_TOKEN|ANTHROPIC_API)"
+    severity: critical
+    message: "Potential secret detected in code"
+
+  - name: "No unhandled promise rejections"
+    pattern: "\\.catch\\(\\s*\\)|\\.then\\([^)]*\\)\\s*$"
+    severity: warning
+    message: "Promise may have unhandled rejection"
+
+  - name: "No console.log in production"
+    pattern: "console\\.log\\("
+    paths: "src/**"
+    severity: info
+    message: "Remove console.log before deploy"
